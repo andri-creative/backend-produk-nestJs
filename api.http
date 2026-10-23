@@ -1,0 +1,71 @@
+@url = http://192.168.110.56:32310
+# Tempel accessToken dari response register/login di sini
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhN2JmMWU1NC1mMzAyLTRmNmMtOTgzZC1lOWQ1OTc4Mzk5YmYiLCJlbWFpbCI6ImFkbWluQGV4YW1wbGUuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzkyNzc3OTcwLCJleHAiOjE3OTI4NjQzNzB9.ygMEPFKItfcBEQSVhhOYubTgwVATukiApMu5GMHLT3g
+
+### Root
+GET {{url}}/
+
+### Helpers - Database Connection Status
+GET {{url}}/helpers
+
+### Auth - Admin Login
+# @name loginAdmin
+POST {{url}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@example.com",
+  "password": "admin12345"
+}
+
+### Auth - Register (email & password manual)
+# @name register
+POST {{url}}/auth/register
+Content-Type: application/json
+
+{
+  "name": "Andri",
+  "email": "andri@example.com",
+  "password": "rahasia123"
+}
+
+### Auth - Login
+# @name login
+POST {{url}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "andri@example.com",
+  "password": "rahasia123"
+}
+
+### Auth - Login Admin (hasil seed)
+# @name loginAdmin
+POST {{url}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@example.com",
+  "password": "admin12345"
+}
+
+### Users - Me (butuh Bearer token)
+GET {{url}}/users/me
+Authorization: Bearer {{token}}
+
+### Users - Update Profile
+PATCH {{url}}/users/me/profile
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "displayName": "Andri",
+  "phone": "08123456789",
+  "bio": "Fullstack developer",
+  "avatarUrl": "https://example.com/avatar.png",
+  "location": "Jakarta"
+}
+
+### Users - Connected Accounts
+GET {{url}}/users/me/accounts
+Authorization: Bearer {{token}}
