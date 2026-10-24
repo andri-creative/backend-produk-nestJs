@@ -7,6 +7,9 @@ import { SupabaseModule } from './core/supabase/supabase.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { PostgresModule } from './core/postgres/postgres.module';
 import { UsersModule } from './modules/users/users.module';
+import { CategoriesModule } from './modules/categories/categories.module';
+import { MongoModule } from './core/mongo/mongo.module';
+import { RedisModule } from './core/redis/redis.module';
 import { ResponseInterceptor } from './common/interceptors/response.interceptor';
 import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
 
@@ -20,6 +23,9 @@ export const { ObserveModule, ObserveInstrument } = createObserveModule();
     }),
     PostgresModule,
     UsersModule,
+    CategoriesModule,
+    MongoModule,
+    RedisModule,
     HelpersModule,
     SupabaseModule,
     AuthModule,

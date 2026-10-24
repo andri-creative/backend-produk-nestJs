@@ -1,6 +1,8 @@
 import { Injectable, Optional } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PostgresService } from '../../core/postgres/postgres.service';
+import { MongoService } from '../../core/mongo/mongo.service';
+import { RedisService } from '../../core/redis/redis.service';
 
 export type ConnectionStatus = 'up' | 'down' | 'disabled';
 
@@ -35,6 +37,8 @@ export class HelpersService {
   constructor(
     private readonly configService: ConfigService,
     @Optional() private readonly postgresService?: PostgresService,
+    @Optional() private readonly mongoService?: MongoService,
+    @Optional() private readonly redisService?: RedisService,
   ) {}
 
   getUptime(): UptimeResult {
@@ -98,18 +102,34 @@ export class HelpersService {
   }
 
   private async pingMongo(): Promise<ConnectionResult> {
+    if (!this.mongoService) {
+      return {
+        status: 'down',
+        latencyMs: 0,
+        error: 'MongoService not available',
+      };
+    }
+    const result = await this.mongoService.ping();
     return {
-      status: 'down',
-      latencyMs: 0,
-      error: 'MongoDB client library not installed (mongodb package removed)',
+      status: result.success ? 'up' : 'down',
+      latencyMs: result.latencyMs,
+      error: result.error,
     };
   }
 
   private async pingRedis(): Promise<ConnectionResult> {
+    if (!this.redisService) {
+      return {
+        status: 'down',
+        latencyMs: 0,
+        error: 'RedisService not available',
+      };
+    }
+    const result = await this.redisService.ping();
     return {
-      status: 'down',
-      latencyMs: 0,
-      error: 'Redis client library not installed (ioredis package removed)',
+      status: result.success ? 'up' : 'down',
+      latencyMs: result.latencyMs,
+      error: result.error,
     };
   }
 

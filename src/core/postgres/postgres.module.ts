@@ -1,12 +1,8 @@
 import { Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
+import databaseConfig from '../../config/database.config';
 import { PostgresService } from './postgres.service';
-
-function isEnabled(value?: string | boolean): boolean {
-  if (typeof value === 'boolean') return value;
-  return value === 'true' || value === '1' || value === 'yes';
-}
 
 function parseDatabaseUrl(url: string) {
   const match = url.match(/postgresql:\/\/([^:]+):([^@]+)@([^:]+):(\d+)\/(.+)/);
@@ -23,10 +19,10 @@ function parseDatabaseUrl(url: string) {
 @Module({
   imports: [
     SequelizeModule.forRootAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: (configService: ConfigService) => {
-        const enabled = isEnabled(configService.get('POSTGRES_ENABLED'));
+      imports: [ConfigModule.forFeature(databaseConfig)],
+      inject: [databaseConfig.KEY],
+      useFactory: (config: ReturnType<typeof databaseConfig>) => {
+        const { enabled, url } = config.postgres;
 
         if (!enabled) {
           return {
@@ -36,9 +32,7 @@ function parseDatabaseUrl(url: string) {
           };
         }
 
-        const databaseUrl = configService.get('DATABASE_URL');
-        const parsed = databaseUrl ? parseDatabaseUrl(databaseUrl) : null;
-
+        const parsed = parseDatabaseUrl(url);
         if (!parsed) {
           throw new Error('DATABASE_URL is required and must be a valid postgresql:// URL');
         }
@@ -51,7 +45,7 @@ function parseDatabaseUrl(url: string) {
           password: parsed.password,
           database: parsed.database,
           autoLoadModels: true,
-          synchronize: false, // NEVER true in production
+          synchronize: false,
           logging: false,
           dialectOptions: {
             ssl: { require: true, rejectUnauthorized: false },

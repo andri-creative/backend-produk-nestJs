@@ -25,6 +25,26 @@
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
+## Riwayat Pengerjaan
+
+Semua sesi saat API berjalan otomatis tercatat di `worklog.log` (di-ignore dari git).
+Untuk menghasilkan `worklog.json` (riwayat hari + durasi), jalankan:
+
+```bash
+npm run build
+npm run make-worklog
+```
+
+Hasil di [worklog.json](worklog.json), contoh:
+
+```json
+[
+  { "hari": "2026-10-24, 5 jam 30 menit", "deskripsi": "API berjalan otomatis tercatat" }
+]
+```
+
+File `worklog.json` bisa langsung dipakai sebagai catatan jam kerja per hari.
+
 ## Project setup
 
 ```bash

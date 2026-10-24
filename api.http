@@ -69,3 +69,34 @@ Content-Type: application/json
 ### Users - Connected Accounts
 GET {{url}}/users/me/accounts
 Authorization: Bearer {{token}}
+
+### Categories - Create
+POST {{url}}/categories
+Content-Type: application/json
+
+{
+  "name": "Undangan Digital",
+  "slug": "undangan-digital",
+  "icon": "📨",
+  "description": "Template undangan pernikahan, ulang tahun, dan acara lainnya",
+  "sortOrder": 1,
+  "isActive": true
+}
+
+### Categories - List All
+GET {{url}}/categories
+
+### Categories - Get One
+GET {{url}}/categories/{{categoryId}}
+
+### Categories - Update
+PATCH {{url}}/categories/{{categoryId}}
+Content-Type: application/json
+
+{
+  "name": "Undangan Digital Premium",
+  "sortOrder": 0
+}
+
+### Categories - Delete
+DELETE {{url}}/categories/{{categoryId}}

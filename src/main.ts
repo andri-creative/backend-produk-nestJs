@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule, ObserveInstrument } from './app.module';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
 import * as os from 'os';
+import { logWorklogEnd, logWorklogStart } from './common/utils/worklog.util';
 
 function getLocalIp(): string {
   const interfaces = os.networkInterfaces();
@@ -41,5 +42,16 @@ async function bootstrap() {
   const localIp = getLocalIp();
   console.log(`Application is running on: http://localhost:${activePort}`);
   console.log(`Network: http://${localIp}:${activePort}`);
+
+  logWorklogStart();
 }
+
+const handleShutdown = (signal: string) => {
+  logWorklogEnd();
+  process.exit(signal === 'SIGINT' ? 0 : 1);
+};
+
+process.on('SIGINT', handleShutdown);
+process.on('SIGTERM', handleShutdown);
+
 void bootstrap();
